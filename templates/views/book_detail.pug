@@ -1,0 +1,87 @@
+//- 
+
+extends ../layouts/default
+
+block intro
+
+block content
+  body(data-spy="scroll" data-target=".navbar" data-offset="150")
+    nav.navbar.navbar-inverse.navbar-fixed-top
+      .navbar-header
+        button.navbar-toggle(data-toggle="collapse" data-target="#myNavbar")
+          span.icon-bar
+          span.icon-bar
+          span.icon-bar
+        .brand: img(src="../images/lash&brow.png")
+      .collapse.navbar-collapse#myNavbar
+        ul.nav.navbar-nav(style="margin-top:30px;")
+          li: a(href="/" active) Home
+          //- li: a(href="/#team") team
+          //- li: a(href="/#photo") photos
+          //- li: a(href="/#contact") contact
+          //- li: a(href="/book") book online
+  .container
+    .center-500.book-detail
+      if data.user
+        h1 Booking
+        form(action='/api/book' method='POST' id="book_form")
+          div.form-group
+            h3="Employee Info"
+            input(type='hidden' id='user_id' value=data.user._id name='user_id')
+            input(type='hidden' id='user_name' value=data.user.name.first + ' ' + data.user.name.last name='user_name')
+          div.form-group
+            div.col-sm-12.employee-photo
+              if (data.photo)
+                img(src=data.photo)
+          div.form-group
+            label.control-label.col-sm-4 Name:
+            div.col-sm-8
+              if (data.user.name)
+                label=data.user.name.first + ' ' + data.user.name.last
+          div.form-group
+            label.control-label.col-sm-4(for='empservice') Service: 
+            div.col-sm-8
+              select#empservice.form-control(multiple='multiple' name='empservice' autocomplete='off')
+                each service_item in data.service
+                  option(value=service_item._id)=service_item.title
+          div.form-group
+            label.control-label.col-sm-4(for='datetime') Time:
+            div.col-sm-8
+              input#datetime.form-control(type='text' placeholder='Enter your time' name='datetime' autocomplete='off')
+          div.form-group
+            h3="Customer Info"
+          div.form-group
+            label.control-label.col-sm-4(for='customername') Name:
+            div.col-sm-8
+              input.form-control(id='customername' type='text' placeholder='Enter your name' name='customername')
+          div.form-group
+            label.control-label.col-sm-4(for='name') Phone Number:
+            div.col-sm-8
+              input.form-control(id='number' type='tel' placeholder='Enter your phone number' name='number')
+          div.form-group
+            label.control-label.col-sm-4(for='email') Email:
+            div.col-sm-8
+              input.form-control(id='email' type='email' placeholder='Enter your email' name='email')
+          div.form-group
+            label.control-label.col-sm-4(for='description') Description:
+            div.col-sm-8
+              textarea.form-control(id='description' rows='4' placeholder='Enter name' name='description')
+          div.form-group
+            label.control-label.col-sm-4(for='reminder') Reminder:
+            div.col-sm-8
+              select.form-control(id='reminder' name='reminder')
+                each reminder_item in data.reminder
+                  option(value=reminder_item._id)=reminder_item.name
+          div.form-group
+            div.col-sm-offset-4.col-sm-8
+              div.checkbox
+                label
+                  input(type='checkbox' name='agree' value='agree')
+                  Agree with the terms of conditions
+          div.form-group
+            div.col-sm-offset-4.col-sm-8
+              button.btn.btn-default(type='submit') Submit
+      else if data.error
+        h1=data.error
+      else
+        h1 Empty data
